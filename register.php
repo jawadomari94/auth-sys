@@ -1,9 +1,15 @@
 <?php require "includes/header.php"; ?>
 
+<?php require "Config.php"; ?>
 
+<?php
+
+
+
+?>
 
 <main class="form-signin w-50 m-auto">
-  <form method="POST" action="register.php">
+  <form method="post" action="<?php echo htmlspecialchars($_SERVER['PHP_SELF']);?>">
    
     <h1 class="h3 mt-5 fw-normal text-center">Please Register</h1>
 
