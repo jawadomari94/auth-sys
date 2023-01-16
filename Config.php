@@ -13,6 +13,5 @@ try{
     echo "falied connection".$e->getMessage();
 
 }
-$conn = null;
 
 ?>

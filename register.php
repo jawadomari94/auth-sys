@@ -3,6 +3,23 @@
 <?php require "Config.php"; ?>
 
 <?php
+if(isset($_POST['submit'])){
+  if(empty($_POST['email'])or empty($_POST['username'])or empty($_POST['password'])){
+    echo "Some Data Missing";
+  }else{
+    $email = $_POST['email'];
+    $user = $_POST['username'];
+    $pass = $_POST['password'];
+    $stmt = $conn->prepare("INSERT INTO users(email, username, password) VALUES(:email, :username, :mypassword)");
+
+    $stmt->bindparam(':email',$email);
+    $stmt->bindparam(':username',$user);
+    $stmt->bindparam(':mypassword',$pass);
+
+    $stmt->execute();
+  
+}
+}
 
 
 
