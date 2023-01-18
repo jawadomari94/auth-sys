@@ -3,6 +3,10 @@
 <?php require "Config.php"; ?>
 
 <?php
+if(isset($_SESSION['username'])){
+  header('location:index.php');
+}
+
 if(isset($_POST['submit'])){
   if(empty($_POST['email'])or empty($_POST['username'])or empty($_POST['password'])){
     echo "Some Data Missing";
@@ -12,11 +16,10 @@ if(isset($_POST['submit'])){
     $pass = $_POST['password'];
     $stmt = $conn->prepare("INSERT INTO users(email, username, password) VALUES(:email, :username, :mypassword)");
 
-    $stmt->bindparam(':email',$email);
-    $stmt->bindparam(':username',$user);
-    $stmt->bindparam(':mypassword',$pass);
-
-    $stmt->execute();
+    $stmt->execute([':email'=> $email,
+                    ':username'=> $user,
+                    ':mypassword' => password_hash($pass, PASSWORD_DEFAULT),
+  ]);
   
 }
 }
