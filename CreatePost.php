@@ -2,6 +2,9 @@
 <?php require "Config.php"; ?>
 
 <?php
+if(!isset($_SESSION['username'])){
+  header('location:index.php');
+}
 if(isset($_POST['submit'])){
   if(empty($_POST['title'])or empty($_POST['body'])){
     echo "Some Data Missing";
