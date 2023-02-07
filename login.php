@@ -25,6 +25,7 @@ if(isset($_POST['signin'])){
           echo "Login Successfully";
 
           $_SESSION['username']= $data['username'];
+          $_SESSION['user_id'] = $data['Id'];
           header('location:index.php');
 
         }else{

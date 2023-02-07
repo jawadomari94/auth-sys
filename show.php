@@ -13,11 +13,18 @@ if(isset($_GET['Id'])){
     $onepost = $Post->fetch(PDO::FETCH_OBJ);
 }
 
-    $sql = "SELECT * FROM comments WHERE post_id='$id'";
-    $comment = $conn->query($sql);
+    $sql2 = "SELECT * FROM comments WHERE post_id='$id'";
+    $comment = $conn->query($sql2);
     $comment->execute();
 
     $comments = $comment->fetchAll(PDO::FETCH_OBJ);
+
+
+    $sql3 = "SELECT * FROM rates WHERE post_id='$id' AND user_id='$_SESSION[user_id]'";
+    $ratings = $conn->query($sql3);
+    $ratings->execute();
+
+    $rating = $ratings->fetch(PDO::FETCH_OBJ);
 
 ?>
 <main class="form-signin w-50 m-auto mt-5">
@@ -25,6 +32,12 @@ if(isset($_GET['Id'])){
         <div class="card-body">
                     <h5 class="card-title"><?php echo $onepost->title;  ?></h5>
                     <p class="card-text"><?php echo $onepost->body;  ?></p>
+            <form id="form-data" method="POST">
+                    <div class="my-rating"></div>
+                    <input id="rating" type="hidden" name="rating">
+                    <input id="post_id" type="hidden" name="post_id" value="<?php echo $onepost->Id;  ?>">
+                    <input id="user_id" type="hidden" name="user_id" value="<?php echo $_SESSION['user_id'];  ?>">
+            </form>
                 </div>
         </div>
     </div>
@@ -61,9 +74,12 @@ if(isset($_GET['Id'])){
     <?php foreach($comments as $singlecomment) : ?>
     <div class="card">
         <div class="card-body">
+            
                     <h5 class="card-title"><?php echo $singlecomment->username;  ?></h5>
                     <p class="card-text"><?php echo $singlecomment->comment;  ?></p>
+                    <?php if(($_SESSION['username'])==$singlecomment->username): ?>
                     <a href="delete.php?Id=<?php echo $singlecomment->Id; ?>" id="delete" class="w-70 btn btn-lg btn-danger mt-3">Delete</a>
+                    <?php endif; ?>
                 </div>
         </div>
     </div>
@@ -107,6 +123,41 @@ if(isset($_GET['Id'])){
             }, 4000);
 
            }
+
+           $(".my-rating").starRating({
+                starSize: 25,
+
+                initialRating: "<?php
+                
+                if(isset($rating->rating) AND isset($rating->user_id) AND $rating->user_id==$_SESSION['user_id']){
+                    echo $rating->rating;
+                }else{
+                    echo '0';
+                }
+                
+                ?>",
+                callback: function(currentRating, $el){
+                    // make a server call here
+                    $("#rating").val(currentRating);
+
+
+                    $(".my-rating").click(function(e) {
+                        e.preventDefault();
+
+                        var formdata = $("#form-data").serialize()+'&insert=insert';
+
+                        $.ajax({
+                            type: "post",
+                            url: 'insert-rating.php',
+                            data: formdata,
+
+                            success: function() {
+                             //   alert(formdata);
+                            }
+                        })
+                    })
+                }
+        });
 
     });
 </script>
