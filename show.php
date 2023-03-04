@@ -26,7 +26,7 @@ if(isset($_GET['Id'])){
 
     $rating = $ratings->fetch(PDO::FETCH_OBJ);
 
-?>
+?> 
 <main class="form-signin w-50 m-auto mt-5">
     <div class="card">
         <div class="card-body">
@@ -86,78 +86,3 @@ if(isset($_GET['Id'])){
     <?php endforeach; ?>
 </main>
 <?php require "includes/footer.php"; ?>
-
-<script>
-        $(document).ready(function() {
-           $(document).on('submit', function(e){
-            e.preventDefault();
-            //alert('form submitted');
-
-            var formdata = $("#comment_data").serialize()+'&submit=submit';
-
-            $.ajax({
-                type: 'post',
-                url: 'insert-comments.php',
-                data: formdata,
-
-                success: function() {
-                   // alert('sucess');
-                   $("#comment").val(null);
-                   $("#username").val(null);
-                   $("#post_id").val(null);
-
-                   $("#msg").html("Added Successfully").toggleClass("alert alert-danger text-white");
-
-                }
-
-
-            });
-
-            
-           });
-
-           function fetch() {
-            setInterval(function ()  {
-                $("body").load("show.php?Id=<?php echo $_GET['Id']; ?>")
-                
-            }, 4000);
-
-           }
-
-           $(".my-rating").starRating({
-                starSize: 25,
-
-                initialRating: "<?php
-                
-                if(isset($rating->rating) AND isset($rating->user_id) AND $rating->user_id==$_SESSION['user_id']){
-                    echo $rating->rating;
-                }else{
-                    echo '0';
-                }
-                
-                ?>",
-                callback: function(currentRating, $el){
-                    // make a server call here
-                    $("#rating").val(currentRating);
-
-
-                    $(".my-rating").click(function(e) {
-                        e.preventDefault();
-
-                        var formdata = $("#form-data").serialize()+'&insert=insert';
-
-                        $.ajax({
-                            type: "post",
-                            url: 'insert-rating.php',
-                            data: formdata,
-
-                            success: function() {
-                             //   alert(formdata);
-                            }
-                        })
-                    })
-                }
-        });
-
-    });
-</script>
